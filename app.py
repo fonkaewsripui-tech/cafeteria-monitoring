@@ -54,7 +54,6 @@ latest = df.iloc[-1]
 
 people_in = latest["people_in"]
 people_out = latest["people_out"]
-current_people = latest["current_people"]
 
 # ======================================================
 # Dashboard
@@ -62,7 +61,7 @@ current_people = latest["current_people"]
 
 st.write("## 📊 Dashboard")
 
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 
 col1.metric(
     "People In",
@@ -74,22 +73,17 @@ col2.metric(
     people_out
 )
 
-col3.metric(
-    "Current People",
-    current_people
-)
-
 # ======================================================
 # กราฟเส้น
 # ======================================================
 
-st.write("## 📈 People Inside Graph")
+st.write("## 📈 People Detection Graph")
 
 fig = px.line(
     df_display,
-    y="current_people",
+    y=["people_in", "people_out"],
     markers=True,
-    title="People Inside"
+    title="People In / Out"
 )
 
 fig.update_layout(
@@ -107,13 +101,13 @@ st.plotly_chart(
 # กราฟแท่ง
 # ======================================================
 
-st.write("## 📊 People In / Out")
+st.write("## 📊 People In vs People Out")
 
 fig_bar = px.bar(
     df_display,
     y=["people_in", "people_out"],
     barmode="group",
-    title="People In vs People Out"
+    title="People Detection Comparison"
 )
 
 st.plotly_chart(
