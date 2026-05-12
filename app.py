@@ -38,6 +38,15 @@ with col2:
 df = pd.read_csv("people_data.csv")
 
 # ======================================================
+# ลบคอลัมน์เวลา
+# ======================================================
+
+if "time" in df.columns:
+    df_display = df.drop(columns=["time"])
+else:
+    df_display = df.copy()
+
+# ======================================================
 # ดึงข้อมูลล่าสุด
 # ======================================================
 
@@ -48,7 +57,7 @@ people_out = latest["people_out"]
 current_people = latest["current_people"]
 
 # ======================================================
-# Dashboard Metrics
+# Dashboard
 # ======================================================
 
 st.write("## 📊 Dashboard")
@@ -56,40 +65,59 @@ st.write("## 📊 Dashboard")
 col1, col2, col3 = st.columns(3)
 
 col1.metric(
-    "People Entered",
+    "People In",
     people_in
 )
 
 col2.metric(
-    "People Exited",
+    "People Out",
     people_out
 )
 
 col3.metric(
-    "Current Occupancy",
+    "Current People",
     current_people
 )
 
 # ======================================================
-# กราฟ
+# กราฟเส้น
 # ======================================================
 
-st.write("## 📈 People Count Trend")
+st.write("## 📈 People Inside Graph")
 
 fig = px.line(
-    df,
+    df_display,
     y="current_people",
     markers=True,
-    title="Current People Trend"
+    title="People Inside"
 )
 
 fig.update_layout(
     xaxis_title="Detection Sequence",
-    yaxis_title="People Count"
+    yaxis_title="People Count",
+    template="plotly_white"
 )
 
 st.plotly_chart(
     fig,
+    use_container_width=True
+)
+
+# ======================================================
+# กราฟแท่ง
+# ======================================================
+
+st.write("## 📊 People In / Out")
+
+fig_bar = px.bar(
+    df_display,
+    y=["people_in", "people_out"],
+    barmode="group",
+    title="People In vs People Out"
+)
+
+st.plotly_chart(
+    fig_bar,
     use_container_width=True
 )
 
@@ -100,7 +128,7 @@ st.plotly_chart(
 st.write("## 📋 Data Table")
 
 st.dataframe(
-    df,
+    df_display,
     use_container_width=True
 )
 
